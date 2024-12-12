@@ -1,0 +1,16 @@
+{
+  "extensions": [
+    "ts"
+  ],
+  "spec": "src/**/*.spec.ts",
+  "require": [
+    "jsdom-global/register",
+    "ts-node/register",
+    "source-map-support/register"
+  ],
+  "node-option": [
+    "experimental-specifier-resolution=node",
+    "import=./src/unit-test-setup.js"
+  ],
+  "recursive": true
+}

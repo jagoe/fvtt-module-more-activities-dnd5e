@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/foundryvtt-module-manifest.json",
+  "id": "fvtt-module-more-activities-dnd5e",
+  "title": "More Activities for dnd5e",
+  "description": "A module for the Foundry VTT system dnd5e that adds more activities to weapons and actions with certain tags.",
+  "version": "1.0.0",
+  "packs": [],
+  "scripts": [],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "styles": [
+    "style.css"
+  ],
+  "esmodules": [
+    "scripts/module.js"
+  ]
+}
