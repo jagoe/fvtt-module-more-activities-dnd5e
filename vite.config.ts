@@ -28,10 +28,7 @@ export default defineConfig({
       watch: ['src/styles/*.scss'],
     }),
     copy({
-      targets: [
-        { src: 'src/languages', dest: 'dist' },
-        { src: 'src/templates', dest: 'dist' },
-      ],
+      targets: [{ src: 'src/languages', dest: 'dist' }],
       hook: 'writeBundle',
     }),
     addWatchedFilesPlugin(),
@@ -53,11 +50,6 @@ function addWatchedFilesPlugin(): Plugin {
       const translations = await fsPromises.readdir('src/languages')
       translations.forEach((file) => {
         this.addWatchFile(`src/languages/${file}`)
-      })
-
-      const templates = await fsPromises.readdir('src/templates')
-      templates.forEach((file) => {
-        this.addWatchFile(`src/templates/${file}`)
       })
     },
   }
