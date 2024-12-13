@@ -1,2 +1,7 @@
 export * from './addOffhandAttack'
+export * from './addOffhandThrownAttack'
+export * from './addThrowAttack'
+export * from './addTwoHandedAttack'
+export * from './addWeaponTagActivities'
 export * from './getDefaultActivity'
+export * from './resetActivities'

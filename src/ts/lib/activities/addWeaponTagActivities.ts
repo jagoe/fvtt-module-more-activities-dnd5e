@@ -1,41 +1,51 @@
 import { getAllOwnedWeapons } from '@/lib/foundry'
-import { addOffhandAttack, hasOffhandAttack } from './addOffhandAttack'
-import { addThrownAttack, hasThrownAttack } from './addThrowAttack'
-import { addTwoHandedAttack, hasTwoHandedAttack } from './addTwoHandedAttack'
-import { addOffhandThrownAttack, hasOffhandThrownAttack } from './addOffhandThrownAttack'
+import { addOffhandAttack } from './addOffhandAttack'
+import { addThrownAttack } from './addThrowAttack'
+import { addTwoHandedAttack } from './addTwoHandedAttack'
+import { addOffhandThrownAttack } from './addOffhandThrownAttack'
 import { Dnd5eItemProperty } from '@/models'
 import { debug } from '../util/debug'
+import { hasWeaponTagActivity } from './hasWeaponTagActivity'
+import { MadActivityKey } from '@/constants'
 
 export const addWeaponTagActivities = async (weapons?: Item[]) => {
   weapons ??= getAllOwnedWeapons()
 
   const light = weapons.filter(
-    (weapon) => weapon.system.properties.has(Dnd5eItemProperty.Light) && !hasOffhandAttack(weapon),
+    (weapon) =>
+      weapon.system.properties.has(Dnd5eItemProperty.Light) &&
+      !hasWeaponTagActivity(weapon, MadActivityKey.OffhandActivityKey),
   )
   debug(
-    'Found light weapons without offhand attack:',
+    'Light weapons newly configured to have offhand attack:',
     light.map((weapon) => ({ id: weapon.id, name: weapon.name })),
   )
 
   const thrown = weapons.filter(
-    (weapon) => weapon.system.properties.has(Dnd5eItemProperty.Thrown) && !hasThrownAttack(weapon),
+    (weapon) =>
+      weapon.system.properties.has(Dnd5eItemProperty.Thrown) &&
+      !hasWeaponTagActivity(weapon, MadActivityKey.ThrownActivityKey),
   )
   debug(
-    'Found thrown weapons without throw attack:',
+    'Thrown weapons newly configured to have throw attack:',
     thrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
   )
 
-  const lightThrown = light.filter((weapon) => thrown.includes(weapon) && !hasOffhandThrownAttack(weapon))
+  const lightThrown = light.filter(
+    (weapon) => thrown.includes(weapon) && !hasWeaponTagActivity(weapon, MadActivityKey.OffhandThrownActivityKey),
+  )
   debug(
-    'Found light, thrown weapons without offhand throw attack:',
+    'Light, thrown weapons newly configured to have offhand throw attack:',
     lightThrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
   )
 
   const versatile = weapons.filter(
-    (weapon) => weapon.system.properties.has(Dnd5eItemProperty.Versatile) && !hasTwoHandedAttack(weapon),
+    (weapon) =>
+      weapon.system.properties.has(Dnd5eItemProperty.Versatile) &&
+      !hasWeaponTagActivity(weapon, MadActivityKey.TwoHandedActivityKey),
   )
   debug(
-    'Found versatile weapons without two-handed attack:',
+    'Versatile weapons newly configured to have two-handed attack:',
     versatile.map((weapon) => ({ id: weapon.id, name: weapon.name })),
   )
 

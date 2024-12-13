@@ -1,6 +1,5 @@
 import { moduleId } from './constants'
-import { addWeaponTagActivities } from './lib/activities/addWeaponTagActivities'
-import { resetActivities } from './lib/activities/resetActivities'
+import { addWeaponTagActivities, resetActivities } from './lib/activities'
 import { i18n, displayNotification } from './lib/foundry'
 import { MoreActivitiesModule } from './module'
 

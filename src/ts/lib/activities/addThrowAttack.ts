@@ -1,69 +1,39 @@
-import { dnd5eDefaultActivityKey, MadActivityKey } from '@/constants'
-import { getDefaultActivity } from './getDefaultActivity'
-import { NoDefaultActivityError } from '@/models'
-import { createConsumableForWeapon, i18n } from '../foundry'
-import { getConsumableForWeapon } from '../foundry/getConsumableForWeapon'
-
-export const hasThrownAttack = (weapon: Item) =>
-  weapon.system.activities.has(MadActivityKey.ThrownActivityKey) && hasConsumable(weapon)
-
-const hasConsumable = (weapon: Item) =>
-  (weapon.parent as Actor).items.some((item) => item.type === 'consumable' && item.name === weapon.name)
+import { MadActivityKey } from '@/constants'
+import { addWeaponTagActivity } from './addWeaponTagActivity'
+import { configureConsumableForActivity } from './configureConsumableForActivity'
 
 export const addThrownAttack = async (weapon: Item) => {
-  if (hasThrownAttack(weapon)) {
+  const result = await addWeaponTagActivity({
+    weapon,
+    key: MadActivityKey.ThrownActivityKey,
+    labelI18nKey: 'MAD.activities.thrown.name',
+    getAdjustments: (defaultActivity) => ({
+      attack: {
+        ...defaultActivity.attack,
+        type: {
+          ...defaultActivity.attack.type,
+          value: 'ranged',
+        },
+      },
+      damage: {
+        ...defaultActivity.damage,
+        includeBase: true,
+        parts: [],
+      },
+      range: {
+        ...defaultActivity.range,
+        value: weapon.system.range.value,
+      },
+    }),
+  })
+
+  if (!result) {
+    // Already processed, nothing to do
     return
   }
 
-  const defaultActivity = getDefaultActivity(weapon)
-  if (!defaultActivity) {
-    throw new NoDefaultActivityError(weapon)
-  }
+  const { activity } = result
 
-  const basicActicitySettings: Activity = {
-    ...defaultActivity,
-    _id: MadActivityKey.ThrownActivityKey,
-    name: i18n('MAD.activities.thrown.name'),
-  }
-
-  const thrownActivitySettings: Partial<Activity> = {
-    attack: {
-      ...defaultActivity.attack,
-      type: {
-        ...defaultActivity.attack.type,
-        value: 'ranged',
-      },
-    },
-    damage: {
-      ...defaultActivity.damage,
-      includeBase: true,
-    },
-    range: {
-      ...defaultActivity.range,
-      value: weapon.system.range.value,
-    },
-  }
-
-  await weapon.createActivity('attack', { ...basicActicitySettings, ...thrownActivitySettings }, { renderSheet: false })
-
-  const activity = weapon.system.activities.get(MadActivityKey.ThrownActivityKey)
-  const consumable = getConsumableForWeapon(weapon) ?? (await createConsumableForWeapon(weapon))
-  if (activity && consumable?.id) {
-    const consumptionTargets: ConsumptionTargetSchema[] = [
-      {
-        type: 'material',
-        target: consumable.id,
-        value: '1',
-      },
-    ]
-    await activity.update({ 'consumption.targets': consumptionTargets })
-  }
-
-  await weapon.updateActivity(dnd5eDefaultActivityKey, {
-    range: {
-      ...defaultActivity.range,
-      override: true,
-      value: weapon.system.range.reach,
-    },
-  })
+  // Configure consumption of the weapon's consumable
+  await configureConsumableForActivity(weapon, activity)
 }

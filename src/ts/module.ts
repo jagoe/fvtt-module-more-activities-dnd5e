@@ -1,11 +1,7 @@
 // Do not remove this import. If you do Vite will think your styles are dead
 // code and not include them in the build output.
 import '../styles/style.scss'
-import { addOffhandAttack } from './lib/activities'
-import { addThrownAttack } from './lib/activities/addThrowAttack'
-import { addTwoHandedAttack } from './lib/activities/addTwoHandedAttack'
-import { addWeaponTagActivities } from './lib/activities/addWeaponTagActivities'
-import { resetActivities } from './lib/activities/resetActivities'
+import { addWeaponTagActivities, resetActivities } from './lib/activities'
 import { moduleId } from './constants'
 import { MadSettings, onRenderSettingsConfig, registerSettings } from './settings'
 import { debug } from './lib/util/debug'
@@ -14,9 +10,6 @@ import { getAllActorWeapons, loadSetting } from './lib/foundry'
 export interface MoreActivitiesModule extends Module {
   API: {
     addWeaponTagActivities: typeof addWeaponTagActivities
-    addOffhandAttack: typeof addOffhandAttack
-    addThrownAttack: typeof addThrownAttack
-    addTwoHandedAttack: typeof addTwoHandedAttack
     removeWeaponTagActivities: typeof resetActivities
   }
   settings: {
@@ -51,9 +44,6 @@ const initializeModule = () => {
 
   madModule.API = {
     addWeaponTagActivities,
-    addOffhandAttack,
-    addThrownAttack,
-    addTwoHandedAttack,
     removeWeaponTagActivities: resetActivities,
   }
 }
