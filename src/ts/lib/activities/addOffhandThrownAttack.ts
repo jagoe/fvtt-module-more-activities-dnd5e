@@ -18,7 +18,7 @@ export const addOffhandThrownAttack = async (weapon: Item) => {
 
   const offhandThrownActivitySettings: Activity = {
     ...defaultActivity,
-    _id: MadActivityKey.OffhandActivityKey,
+    _id: MadActivityKey.OffhandThrownActivityKey,
     name: i18n('MAD.activities.offhand-throw.name'),
     attack: {
       ...defaultActivity.attack,
