@@ -1,5 +1,45 @@
 {
   "MAD": {
-    "errors": {}
+    "errors": {
+      "noDefaultActivity": "Unexpected error: No default activity for item {item}"
+    },
+    "settings": {
+      "resetOnLoad": {
+        "name": "Reset custom activities on startup",
+        "hint": "When active, any time activities would be created by this module, it will first delete any it had created before (within the same scope)."
+      },
+      "sections": {
+        "debug": "Debug settings"
+      },
+      "buttons": {
+        "resetActivities": {
+          "text": "Remove",
+          "label": "Remove activities created by this module",
+          "success": "Activities successfully removed"
+        },
+        "createActivities": {
+          "text": "Create",
+          "label": "Create weapon tag activities on all items",
+          "success": "Activities successfully created"
+        }
+      }
+    },
+    "activities": {
+      "offhand": {
+        "name": "Offhand"
+      },
+      "twohand": {
+        "name": "Two-Handed"
+      },
+      "thrown": {
+        "name": "Thrown"
+      },
+      "offhand-throw": {
+        "name": "Offhand Throw"
+      },
+      "oneHanded": {
+        "name": "One-Handed"
+      }
+    }
   }
 }

@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
-    "types": [
-      "@league-of-foundry-developers/foundry-vtt-types",
-    ],
+    "types": ["@league-of-foundry-developers/foundry-vtt-types"],
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,
@@ -22,14 +17,13 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noImplicitAny": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/ts/*"],
+      "@languages/*": ["./languages/*"]
+    }
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*test-setup.js",
-    "src/e2e"
-  ]
+  "include": ["src"],
+  "exclude": ["**/*.spec.ts", "**/*test-setup.js", "src/e2e"]
 }

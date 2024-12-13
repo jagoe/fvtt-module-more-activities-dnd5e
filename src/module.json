@@ -17,9 +17,19 @@
       "path": "languages/en.json"
     }
   ],
-  "styles": [
-    "style.css"
-  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "compatibility": {
+          "minimum": "4.0.0",
+          "verified": "4.1.2"
+        },
+        "type": "system"
+      }
+    ]
+  },
+  "styles": [],
   "esmodules": [
     "scripts/module.js"
   ]

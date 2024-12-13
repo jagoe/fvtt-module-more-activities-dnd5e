@@ -1,4 +1,5 @@
-import * as fsPromises from 'fs/promises'
+import * as fsPromises from 'node:fs/promises'
+import * as path from 'node:path'
 import copy from 'rollup-plugin-copy'
 import scss from 'rollup-plugin-scss'
 import { defineConfig, Plugin } from 'vite'
@@ -6,8 +7,6 @@ import { defineConfig, Plugin } from 'vite'
 const moduleVersion = process.env.MODULE_VERSION
 const githubProject = process.env.GH_PROJECT
 const githubTag = process.env.GH_TAG
-
-console.log(process.env.VSCODE_INJECTION)
 
 export default defineConfig({
   build: {
@@ -37,6 +36,12 @@ export default defineConfig({
     }),
     addWatchedFilesPlugin(),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src/ts'),
+      '@languages': path.resolve(__dirname, './languages'),
+    },
+  },
 })
 
 function addWatchedFilesPlugin(): Plugin {
