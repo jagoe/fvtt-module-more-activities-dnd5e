@@ -12,7 +12,7 @@
     "test": "cross-env TS_NODE_PROJECT='./tsconfig.unit.json' nyc mocha"
   },
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#v12.331.2-beta",
+    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#v12.331.0-beta",
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.9",
     "@types/sinon": "^17.0.3",
