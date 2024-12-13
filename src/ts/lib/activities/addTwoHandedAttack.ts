@@ -16,6 +16,7 @@ export const addTwoHandedAttack = async (weapon: Item) => {
   }
 
   const weaponVersatileDamage = weapon.system.damage.versatile
+  const weaponBaseDamage = weapon.system.damage.base
 
   const baseActivitySettings: Activity = {
     ...defaultActivity,
@@ -26,19 +27,18 @@ export const addTwoHandedAttack = async (weapon: Item) => {
   const twoHandedActivitySettings: Partial<Activity> = {
     damage: {
       ...defaultActivity.damage,
-      parts: defaultActivity.damage.parts.map((part) => {
-        if (!part.base) {
-          return part
-        }
-
-        return {
-          ...part,
-          number: weaponVersatileDamage.number,
-          denomination: weaponVersatileDamage.denomination + 2,
-          bonus: weaponVersatileDamage.bonus + ' + @mod',
-          types: weaponVersatileDamage.types,
-        }
-      }),
+      parts: [
+        ...defaultActivity.damage.parts.filter((part) => !part.base),
+        {
+          number: weaponVersatileDamage.number || weaponBaseDamage.number,
+          denomination: weaponVersatileDamage.denomination || weaponBaseDamage.denomination + 2,
+          bonus: (weaponVersatileDamage.bonus || weaponBaseDamage.bonus) + '@mod',
+          types: weaponVersatileDamage.types.size ? weaponVersatileDamage.types : weaponBaseDamage.types,
+          scaling: {
+            number: 1,
+          },
+        },
+      ],
       includeBase: false,
     },
     range: {

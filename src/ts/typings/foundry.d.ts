@@ -84,17 +84,17 @@ declare global {
   }
 
   interface ActivityDamagePart {
-    base: boolean
+    base?: boolean
     number: number
     denomination: number
     bonus: string
     scaling: {
-      mode: string
+      mode?: string
       number: number | null
-      formula: string
+      formula?: string
     }
     types: Set<string>
-    custom: {
+    custom?: {
       enabled: boolean
       formula: string
     }

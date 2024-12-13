@@ -37,7 +37,6 @@ export const addThrownAttack = async (weapon: Item) => {
     damage: {
       ...defaultActivity.damage,
       includeBase: true,
-      parts: [],
     },
     range: {
       ...defaultActivity.range,
