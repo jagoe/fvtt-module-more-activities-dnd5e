@@ -17,10 +17,13 @@ export const addTwoHandedAttack = async (weapon: Item) => {
 
   const weaponVersatileDamage = weapon.system.damage.versatile
 
-  const twoHandedActivitySettings: Activity = {
+  const baseActivitySettings: Activity = {
     ...defaultActivity,
     _id: MadActivityKey.TwoHandedActivityKey,
     name: i18n('MAD.activities.twohand.name'),
+  }
+
+  const twoHandedActivitySettings: Partial<Activity> = {
     damage: {
       ...defaultActivity.damage,
       parts: defaultActivity.damage.parts.map((part) => {
@@ -32,7 +35,7 @@ export const addTwoHandedAttack = async (weapon: Item) => {
           ...part,
           number: weaponVersatileDamage.number,
           denomination: weaponVersatileDamage.denomination + 2,
-          weaponVersatileDamage: weaponVersatileDamage.bonus + ' + @mod',
+          bonus: weaponVersatileDamage.bonus + ' + @mod',
           types: weaponVersatileDamage.types,
         }
       }),
@@ -44,7 +47,13 @@ export const addTwoHandedAttack = async (weapon: Item) => {
     },
   }
 
-  await weapon.createActivity('attack', twoHandedActivitySettings, { renderSheet: false })
+  await weapon.createActivity(
+    'attack',
+    { ...baseActivitySettings, ...twoHandedActivitySettings },
+    { renderSheet: false },
+  )
+
+  // Update original attack name to reflect that it is one-handed
   await weapon.updateActivity(dnd5eDefaultActivityKey, {
     name: i18n('MAD.activities.oneHanded.name'),
   })

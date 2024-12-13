@@ -8,11 +8,12 @@ declare global {
   }
 
   interface Actor {
-    items: Item[]
+    items: Collection<Item>
   }
 
   interface Item {
     name: string
+    img: string
     type: Dnd5eItemType
     system: ItemSystemProperties
     createActivity(type: 'attack', activity: Activity, options: { renderSheet: boolean })
@@ -21,6 +22,7 @@ declare global {
 
   interface ItemSystemProperties {
     activities: Collection<Activity>
+    description: string
     properties: Collection<Dnd5eItemProperty>
     damage: {
       base: WeaponDamage
@@ -47,8 +49,10 @@ declare global {
     parent: Item
     name: string
     attack: ActivityAttack
+    consumption: ActivityConsumption
     damage: ActivityDamage
     range: ActivityRange
+    update: (data: Record<string, unknown>) => Promise<void>
   }
 
   interface ActivityAttack {
@@ -58,8 +62,12 @@ declare global {
     }
   }
 
+  interface ActivityConsumption {
+    targets: ConsumptionTargetSchema[]
+  }
+
   interface ActivityDamage {
-    includeBase: false
+    includeBase: boolean
     critical: {
       bonus: string
     }
@@ -90,6 +98,12 @@ declare global {
       enabled: boolean
       formula: string
     }
+  }
+
+  type ConsumptionTargetSchema = {
+    type: 'material'
+    target: string
+    value: string
   }
 
   type Dnd5eItemType =

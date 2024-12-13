@@ -14,11 +14,13 @@ export const addOffhandAttack = async (weapon: Item) => {
   if (!defaultActivity) {
     throw new NoDefaultActivityError(weapon)
   }
-
-  const offhandActivitySettings: Activity = {
+  const basicActicitySettings: Activity = {
     ...defaultActivity,
     _id: MadActivityKey.OffhandActivityKey,
     name: i18n('MAD.activities.offhand.name'),
+  }
+
+  const offhandActivitySettings: Partial<Activity> = {
     damage: {
       ...defaultActivity.damage,
       includeBase: false,
@@ -29,5 +31,9 @@ export const addOffhandAttack = async (weapon: Item) => {
     },
   }
 
-  await weapon.createActivity('attack', offhandActivitySettings, { renderSheet: false })
+  await weapon.createActivity(
+    'attack',
+    { ...basicActicitySettings, ...offhandActivitySettings },
+    { renderSheet: false },
+  )
 }
