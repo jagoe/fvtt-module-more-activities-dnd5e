@@ -22,6 +22,9 @@
           "label": "Create weapon tag activities on all items",
           "success": "Activities successfully created"
         }
+      },
+      "logDebugMessages": {
+        "name": "Log debug messages"
       }
     },
     "activities": {

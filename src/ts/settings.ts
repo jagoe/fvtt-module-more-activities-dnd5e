@@ -2,13 +2,25 @@ import { moduleId } from './constants'
 import { addWeaponTagActivities } from './lib/activities/addWeaponTagActivities'
 import { resetActivities } from './lib/activities/resetActivities'
 import { i18n, displayNotification } from './lib/foundry'
+import { MoreActivitiesModule } from './module'
 
 export enum MadSettings {
+  LogDebugMessages = 'LogDebugMessages',
   ResetMadActivitiesOnLoad = 'ResetMadActivitiesOnLoad',
 }
 
-export const registerSettings = () => {
+export const registerSettings = (module: MoreActivitiesModule) => {
   //#region World settings
+
+  game.settings.register(moduleId, MadSettings.LogDebugMessages, {
+    name: i18n('MAD.settings.logDebugMessages.name'),
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: false,
+    onChange: (value) => (module.settings.debugLog = value),
+  })
 
   game.settings.register(moduleId, MadSettings.ResetMadActivitiesOnLoad, {
     name: i18n('MAD.settings.resetOnLoad.name'),
@@ -32,7 +44,7 @@ export const onRenderSettingsConfig = () => {
   $('<h3>')
     .addClass('border')
     .html(i18n('MAD.settings.sections.debug'))
-    .insertBefore($(`[name="${moduleId}.${MadSettings.ResetMadActivitiesOnLoad}"]`).parents('div.form-group:first'))
+    .insertBefore($(`[name="${moduleId}.${MadSettings.LogDebugMessages}"]`).parents('div.form-group:first'))
 
   $('<div>').addClass('form-group').appendTo(configSection).append()
 

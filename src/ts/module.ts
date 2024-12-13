@@ -19,25 +19,21 @@ export interface MoreActivitiesModule extends Module {
     addTwoHandedAttack: typeof addTwoHandedAttack
     removeWeaponTagActivities: typeof resetActivities
   }
+  settings: {
+    debugLog?: boolean
+  }
 }
 
-let module: MoreActivitiesModule
+export let madModule: MoreActivitiesModule
 
 Hooks.once('init', async () => {
   console.log(`Initializing ${moduleId}`)
 
-  registerSettings()
+  initializeModule()
+  registerSettings(madModule)
+  configureModule()
+
   Hooks.on('renderSettingsConfig', onRenderSettingsConfig)
-
-  module = game.modules?.get(moduleId) as MoreActivitiesModule
-
-  module.API = {
-    addWeaponTagActivities,
-    addOffhandAttack,
-    addThrownAttack,
-    addTwoHandedAttack,
-    removeWeaponTagActivities: resetActivities,
-  }
 })
 
 Hooks.once('ready', () => {
@@ -46,15 +42,35 @@ Hooks.once('ready', () => {
   addActivitiesToNewItems()
 })
 
+const initializeModule = () => {
+  madModule = game.modules?.get(moduleId) as MoreActivitiesModule
+
+  madModule.settings = {
+    debugLog: false, // Needs to be initialized first b/c loadSetting actually requires this to exist
+  }
+
+  madModule.API = {
+    addWeaponTagActivities,
+    addOffhandAttack,
+    addThrownAttack,
+    addTwoHandedAttack,
+    removeWeaponTagActivities: resetActivities,
+  }
+}
+
+const configureModule = () => {
+  madModule.settings.debugLog = loadSetting(MadSettings.LogDebugMessages, false)
+}
+
 const initializeActivities = async () => {
   const resetOnLoad = loadSetting<boolean>(MadSettings.ResetMadActivitiesOnLoad, false)
   if (resetOnLoad) {
     debug('Deleting all existing weapon actvities created by this module')
-    await module.API.removeWeaponTagActivities()
+    await madModule.API.removeWeaponTagActivities()
   }
 
   debug('Creating weapon activities for all light, versatile, and thrown weapons')
-  await module.API.addWeaponTagActivities()
+  await madModule.API.addWeaponTagActivities()
 }
 
 const addActivitiesToNewItems = () => {
