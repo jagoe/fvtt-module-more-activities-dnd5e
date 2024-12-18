@@ -5,10 +5,12 @@ import '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/head'
 declare global {
   interface Game {
     actors: Actor[]
+    scenes: Scene[]
   }
 
   interface Actor {
     name: string
+    type: 'character' | 'npc'
     items: Collection<Item>
   }
 

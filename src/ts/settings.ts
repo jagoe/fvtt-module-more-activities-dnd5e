@@ -5,15 +5,26 @@ import { i18n, displayNotification } from './lib/foundry'
 import { MoreActivitiesModule } from './module'
 
 export enum MadSettings {
-  LogDebugMessages = 'LogDebugMessages',
-  ResetMadActivitiesOnLoad = 'ResetMadActivitiesOnLoad',
-  FeatureGenerateConsumables = 'FeatureGenerateConsumables',
+  IgnoreNpcs = 'IgnoreNpcs',
+  ExperimentalGenerateConsumables = 'ExperimentalGenerateConsumables',
+  DebugLogMessages = 'LogDebugMessages',
+  DebugResetMadActivitiesOnLoad = 'ResetMadActivitiesOnLoad',
 }
 
 export const registerSettings = (module: MoreActivitiesModule) => {
-  game.settings.register(moduleId, MadSettings.FeatureGenerateConsumables, {
-    name: i18n('MAD.settings.feature.generateConsumables.name'),
-    hint: i18n('MAD.settings.feature.generateConsumables.hint'),
+  game.settings.register(moduleId, MadSettings.IgnoreNpcs, {
+    name: i18n('MAD.settings.feature.ignoreNpcs.name'),
+    hint: i18n('MAD.settings.feature.ignoreNpcs.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  })
+
+  game.settings.register(moduleId, MadSettings.ExperimentalGenerateConsumables, {
+    name: i18n('MAD.settings.experimental.generateConsumables.name'),
+    hint: i18n('MAD.settings.experimental.generateConsumables.hint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -28,8 +39,8 @@ export const registerSettings = (module: MoreActivitiesModule) => {
     },
   })
 
-  game.settings.register(moduleId, MadSettings.LogDebugMessages, {
-    name: i18n('MAD.settings.logDebugMessages.name'),
+  game.settings.register(moduleId, MadSettings.DebugLogMessages, {
+    name: i18n('MAD.settings.debug.logDebugMessages.name'),
     scope: 'client',
     config: true,
     type: Boolean,
@@ -38,9 +49,9 @@ export const registerSettings = (module: MoreActivitiesModule) => {
     onChange: (value) => (module.settings.debugLog = value),
   })
 
-  game.settings.register(moduleId, MadSettings.ResetMadActivitiesOnLoad, {
-    name: i18n('MAD.settings.resetOnLoad.name'),
-    hint: i18n('MAD.settings.resetOnLoad.hint'),
+  game.settings.register(moduleId, MadSettings.DebugResetMadActivitiesOnLoad, {
+    name: i18n('MAD.settings.debug.resetOnLoad.name'),
+    hint: i18n('MAD.settings.debug.resetOnLoad.hint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -50,14 +61,17 @@ export const registerSettings = (module: MoreActivitiesModule) => {
 }
 
 export const onRenderSettingsConfig = () => {
-  const configSection = $(`section.category[data-category=${moduleId}]`)
+  $('<h3>')
+    .addClass('border')
+    .html(i18n('MAD.settings.experimental.title'))
+    .insertBefore(
+      $(`[name="${moduleId}.${MadSettings.ExperimentalGenerateConsumables}"]`).parents('div.form-group:first'),
+    )
 
   $('<h3>')
     .addClass('border')
-    .html(i18n('MAD.settings.sections.debug'))
-    .insertBefore($(`[name="${moduleId}.${MadSettings.LogDebugMessages}"]`).parents('div.form-group:first'))
-
-  $('<div>').addClass('form-group').appendTo(configSection).append()
+    .html(i18n('MAD.settings.debug.title'))
+    .insertBefore($(`[name="${moduleId}.${MadSettings.DebugLogMessages}"]`).parents('div.form-group:first'))
 
   addConfigButton(
     i18n('MAD.settings.buttons.resetActivities.label'),

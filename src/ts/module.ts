@@ -17,6 +17,7 @@ export interface MoreActivitiesModule extends Module {
   settings: {
     debugLog: boolean
     generateConsumables: boolean
+    ignoreNPCs: boolean
   }
 }
 
@@ -40,9 +41,11 @@ Hooks.once('ready', async () => {
 const initializeModule = () => {
   madModule = game.modules?.get(moduleId) as MoreActivitiesModule
 
+  // Needs to be initialized first b/c loadSetting actually requires this to exist
   madModule.settings = {
-    debugLog: false, // Needs to be initialized first b/c loadSetting actually requires this to exist
+    debugLog: false,
     generateConsumables: false,
+    ignoreNPCs: false,
   }
 
   madModule.API = {
@@ -53,12 +56,13 @@ const initializeModule = () => {
 }
 
 const configureModule = () => {
-  madModule.settings.debugLog = loadSetting(MadSettings.LogDebugMessages, false)
-  madModule.settings.generateConsumables = loadSetting(MadSettings.FeatureGenerateConsumables, false)
+  madModule.settings.debugLog = loadSetting(MadSettings.DebugLogMessages, false)
+  madModule.settings.generateConsumables = loadSetting(MadSettings.ExperimentalGenerateConsumables, false)
+  madModule.settings.ignoreNPCs = loadSetting(MadSettings.IgnoreNpcs, false)
 }
 
 const initializeActivities = async () => {
-  const resetOnLoad = loadSetting<boolean>(MadSettings.ResetMadActivitiesOnLoad, false)
+  const resetOnLoad = loadSetting<boolean>(MadSettings.DebugResetMadActivitiesOnLoad, false)
   if (resetOnLoad) {
     debug('Deleting all existing weapon actvities created by this module')
     await madModule.API.removeWeaponTagActivities()
@@ -78,6 +82,10 @@ const addActivitiesToNewItems = () => {
       return
     }
 
+    if (madModule.settings.ignoreNPCs && actor.type === 'npc') {
+      return
+    }
+
     const weapons = getAllActorWeapons(actor)
     addWeaponTagActivities(weapons)
   })
@@ -88,6 +96,10 @@ const addActivitiesToNewItems = () => {
     }
 
     if (item.type !== 'weapon') {
+      return
+    }
+
+    if (madModule.settings.ignoreNPCs && (item.parent as Actor).type === 'npc') {
       return
     }
 

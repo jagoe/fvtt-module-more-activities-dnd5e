@@ -4,13 +4,6 @@
       "noDefaultActivity": "Unexpected error: No default activity for item {item}"
     },
     "settings": {
-      "resetOnLoad": {
-        "name": "Reset custom activities on startup",
-        "hint": "When active, any time activities would be created by this module, it will first delete any it had created before (within the same scope)."
-      },
-      "sections": {
-        "debug": "Debug settings"
-      },
       "buttons": {
         "resetActivities": {
           "text": "Remove",
@@ -23,13 +16,27 @@
           "success": "Activities successfully created"
         }
       },
-      "logDebugMessages": {
-        "name": "Log debug messages"
+      "debug": {
+        "title": "Debug settings",
+        "logDebugMessages": {
+          "name": "Log debug messages"
+        },
+        "resetOnLoad": {
+          "name": "Reset custom activities on startup",
+          "hint": "When active, any time activities would be created by this module, it will first delete any it had created before (within the same scope)."
+        }
       },
-      "feature": {
+      "experimental": {
+        "title": "Experimental settings",
         "generateConsumables": {
           "name": "Experimental: Generate consumables for thrown weapons",
           "hint": "Generates a specific consumable for each thrown weapon to automatically reduce the amount when thrown. When disabled, removes consumables linked to the thrown activities."
+        }
+      },
+      "feature": {
+        "ignoreNpcs": {
+          "name": "Ignore NPCs",
+          "hint": "If enabled, will create additional activities only for player characters. Will not remove existing NPC activities."
         }
       }
     },
