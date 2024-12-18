@@ -29,6 +29,7 @@ declare global {
       units: string
     }
     quantity: number
+    magicalBonus: number
     properties: Collection<Dnd5eItemProperty>
     damage: {
       base: WeaponDamage

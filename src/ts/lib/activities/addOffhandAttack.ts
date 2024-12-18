@@ -6,14 +6,30 @@ export const addOffhandAttack = async (weapon: Item) =>
     weapon,
     key: MadActivityKey.OffhandActivityKey,
     labelI18nKey: 'MAD.activities.offhand.name',
-    getAdjustments: (defaultActivity) => ({
-      damage: {
-        ...defaultActivity.damage,
-        includeBase: false,
-      },
-      range: {
-        ...defaultActivity.range,
-        value: weapon.system.range.reach,
-      },
-    }),
+    getAdjustments: (defaultActivity) => {
+      const weaponBaseDamage = weapon.system.damage.base
+
+      return {
+        damage: {
+          ...defaultActivity.damage,
+          includeBase: false,
+          parts: [
+            ...defaultActivity.damage.parts.filter((part) => !part.base),
+            {
+              number: weaponBaseDamage.number,
+              denomination: weaponBaseDamage.denomination,
+              bonus: weaponBaseDamage.bonus + (weapon.system.magicalBonus ?? 0), // Leave out @mod
+              types: weaponBaseDamage.types,
+              scaling: {
+                number: 1,
+              },
+            },
+          ],
+        },
+        range: {
+          ...defaultActivity.range,
+          value: weapon.system.range.reach,
+        },
+      }
+    },
   })

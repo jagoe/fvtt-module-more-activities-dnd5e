@@ -14,19 +14,22 @@ export const addTwoHandedAttack = async (weapon: Item) => {
       return {
         damage: {
           ...defaultActivity.damage,
+          includeBase: false,
           parts: [
             ...defaultActivity.damage.parts.filter((part) => !part.base),
+            // Same damage as default activity, but default to weapon's versatile data where available
             {
               number: weaponVersatileDamage.number || weaponBaseDamage.number,
+              // Fallback to increasing dice denomination by 2 (e.g. d8 to d10)
               denomination: weaponVersatileDamage.denomination || weaponBaseDamage.denomination + 2,
-              bonus: (weaponVersatileDamage.bonus || weaponBaseDamage.bonus) + '@mod',
+              bonus:
+                (weaponVersatileDamage.bonus || weaponBaseDamage.bonus) + '@mod + ' + (weapon.system.magicalBonus ?? 0),
               types: weaponVersatileDamage.types.size ? weaponVersatileDamage.types : weaponBaseDamage.types,
               scaling: {
                 number: 1,
               },
             },
           ],
-          includeBase: false,
         },
         range: {
           ...defaultActivity.range,
