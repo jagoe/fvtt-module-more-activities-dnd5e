@@ -8,6 +8,7 @@ declare global {
   }
 
   interface Actor {
+    name: string
     items: Collection<Item>
   }
 
@@ -23,6 +24,11 @@ declare global {
   interface ItemSystemProperties {
     activities: Collection<Activity>
     description: string
+    weight: {
+      value: number
+      units: string
+    }
+    quantity: number
     properties: Collection<Dnd5eItemProperty>
     damage: {
       base: WeaponDamage

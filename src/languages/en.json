@@ -25,6 +25,12 @@
       },
       "logDebugMessages": {
         "name": "Log debug messages"
+      },
+      "feature": {
+        "generateConsumables": {
+          "name": "Experimental: Generate consumables for thrown weapons",
+          "hint": "Generates a specific consumable for each thrown weapon to automatically reduce the amount when thrown. When disabled, removes consumables linked to the thrown activities."
+        }
       }
     },
     "activities": {

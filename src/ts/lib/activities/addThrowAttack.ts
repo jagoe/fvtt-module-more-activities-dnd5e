@@ -1,9 +1,8 @@
 import { MadActivityKey } from '@/constants'
 import { addWeaponTagActivity } from './addWeaponTagActivity'
-import { configureConsumableForActivity } from './configureConsumableForActivity'
 
-export const addThrownAttack = async (weapon: Item) => {
-  const result = await addWeaponTagActivity({
+export const addThrownAttack = (weapon: Item) =>
+  addWeaponTagActivity({
     weapon,
     key: MadActivityKey.ThrownActivityKey,
     labelI18nKey: 'MAD.activities.thrown.name',
@@ -26,14 +25,3 @@ export const addThrownAttack = async (weapon: Item) => {
       },
     }),
   })
-
-  if (!result) {
-    // Already processed, nothing to do
-    return
-  }
-
-  const { activity } = result
-
-  // Configure consumption of the weapon's consumable
-  await configureConsumableForActivity(weapon, activity)
-}

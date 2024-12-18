@@ -6,14 +6,17 @@ import { moduleId } from './constants'
 import { MadSettings, onRenderSettingsConfig, registerSettings } from './settings'
 import { debug } from './lib/util/debug'
 import { getAllActorWeapons, loadSetting } from './lib/foundry'
+import { removeLinkedConsumables } from './lib/activities/removeLinkedConsumables'
 
 export interface MoreActivitiesModule extends Module {
   API: {
     addWeaponTagActivities: typeof addWeaponTagActivities
     removeWeaponTagActivities: typeof resetActivities
+    removeConsumables: typeof removeLinkedConsumables
   }
   settings: {
-    debugLog?: boolean
+    debugLog: boolean
+    generateConsumables: boolean
   }
 }
 
@@ -29,9 +32,8 @@ Hooks.once('init', async () => {
   Hooks.on('renderSettingsConfig', onRenderSettingsConfig)
 })
 
-Hooks.once('ready', () => {
-  // We're not awaiting this on purpose, as this shouldn't block anything
-  initializeActivities()
+Hooks.once('ready', async () => {
+  await initializeActivities()
   addActivitiesToNewItems()
 })
 
@@ -40,16 +42,19 @@ const initializeModule = () => {
 
   madModule.settings = {
     debugLog: false, // Needs to be initialized first b/c loadSetting actually requires this to exist
+    generateConsumables: false,
   }
 
   madModule.API = {
     addWeaponTagActivities,
     removeWeaponTagActivities: resetActivities,
+    removeConsumables: removeLinkedConsumables,
   }
 }
 
 const configureModule = () => {
   madModule.settings.debugLog = loadSetting(MadSettings.LogDebugMessages, false)
+  madModule.settings.generateConsumables = loadSetting(MadSettings.FeatureGenerateConsumables, false)
 }
 
 const initializeActivities = async () => {
@@ -61,6 +66,10 @@ const initializeActivities = async () => {
 
   debug('Creating weapon activities for all light, versatile, and thrown weapons')
   await madModule.API.addWeaponTagActivities()
+
+  if (!madModule.settings.generateConsumables) {
+    await madModule.API.removeConsumables()
+  }
 }
 
 const addActivitiesToNewItems = () => {
@@ -75,6 +84,10 @@ const addActivitiesToNewItems = () => {
 
   Hooks.on('createItem', (item: Item) => {
     if (!item.isOwner) {
+      return
+    }
+
+    if (item.type !== 'weapon') {
       return
     }
 

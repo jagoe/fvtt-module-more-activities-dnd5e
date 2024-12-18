@@ -1,15 +1,32 @@
 import { moduleId } from './constants'
 import { addWeaponTagActivities, resetActivities } from './lib/activities'
+import { removeLinkedConsumables } from './lib/activities/removeLinkedConsumables'
 import { i18n, displayNotification } from './lib/foundry'
 import { MoreActivitiesModule } from './module'
 
 export enum MadSettings {
   LogDebugMessages = 'LogDebugMessages',
   ResetMadActivitiesOnLoad = 'ResetMadActivitiesOnLoad',
+  FeatureGenerateConsumables = 'FeatureGenerateConsumables',
 }
 
 export const registerSettings = (module: MoreActivitiesModule) => {
-  //#region World settings
+  game.settings.register(moduleId, MadSettings.FeatureGenerateConsumables, {
+    name: i18n('MAD.settings.feature.generateConsumables.name'),
+    hint: i18n('MAD.settings.feature.generateConsumables.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: false,
+    async onChange(value) {
+      module.settings.generateConsumables = value
+
+      if (!value) {
+        await removeLinkedConsumables()
+      }
+    },
+  })
 
   game.settings.register(moduleId, MadSettings.LogDebugMessages, {
     name: i18n('MAD.settings.logDebugMessages.name'),
@@ -30,11 +47,6 @@ export const registerSettings = (module: MoreActivitiesModule) => {
     default: false,
     requiresReload: false,
   })
-
-  //#endregion
-
-  //#region Client settings
-  //#endregion
 }
 
 export const onRenderSettingsConfig = () => {

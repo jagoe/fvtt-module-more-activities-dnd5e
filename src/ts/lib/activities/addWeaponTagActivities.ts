@@ -7,6 +7,8 @@ import { Dnd5eItemProperty } from '@/models'
 import { debug } from '../util/debug'
 import { hasWeaponTagActivity } from './hasWeaponTagActivity'
 import { MadActivityKey } from '@/constants'
+import { madModule } from '@/module'
+import { configureConsumableForThrownActivities } from './configureConsumableForThrownActivities'
 
 export const addWeaponTagActivities = async (weapons?: Item[]) => {
   weapons ??= getAllOwnedWeapons()
@@ -52,7 +54,12 @@ export const addWeaponTagActivities = async (weapons?: Item[]) => {
   await Promise.all([
     ...light.map(addOffhandAttack),
     ...thrown.map(addThrownAttack),
-    ...versatile.map(addTwoHandedAttack),
     ...lightThrown.map(addOffhandThrownAttack),
+    ...versatile.map(addTwoHandedAttack),
   ])
+
+  // Configure consumption of the weapon's consumable
+  if (madModule.settings.generateConsumables) {
+    await configureConsumableForThrownActivities(thrown)
+  }
 }
