@@ -34,9 +34,26 @@
         }
       },
       "feature": {
+        "hint": "The following settings control where and which activities get created. Disabling these settings will not remove any created activities. Please use the \"Remove\" button below, should you wish to remove unwanted activities created by this module.",
         "ignoreNpcs": {
           "name": "Ignore NPCs",
-          "hint": "If enabled, will create additional activities only for player characters. Will not remove existing NPC activities."
+          "hint": "If enabled, will create additional activities only for player characters."
+        },
+        "createOffhand": {
+          "name": "Create Offhand activities",
+          "hint": "If enabled, will create the Offhand activity for light weapons."
+        },
+        "createThrown": {
+          "name": "Create Thrown activities",
+          "hint": "If enabled, will create the Thrown activity for thrown weapons."
+        },
+        "createOffhandThrown": {
+          "name": "Create Offhand Throw activities",
+          "hint": "If enabled, will create the Offhand Throw activity for light, thrown weapons."
+        },
+        "createTwoHand": {
+          "name": "Create Two-Handed activities",
+          "hint": "If enabled, will create the Two-Handed activity for versatile weapons."
         }
       }
     },

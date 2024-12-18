@@ -13,53 +13,79 @@ import { configureConsumableForThrownActivities } from './configureConsumableFor
 export const addWeaponTagActivities = async (weapons?: Item[]) => {
   weapons ??= getAllOwnedWeapons()
 
-  const light = weapons.filter(
-    (weapon) =>
-      weapon.system.properties.has(Dnd5eItemProperty.Light) &&
-      !hasWeaponTagActivity(weapon, MadActivityKey.OffhandActivityKey),
-  )
-  debug(
-    'Light weapons newly configured to have offhand attack:',
-    light.map((weapon) => ({ id: weapon.id, name: weapon.name })),
-  )
+  const createOffhand = madModule.settings.enabledActivities.offhand
+  const createThrown = madModule.settings.enabledActivities.thrown
+  const createOffhandThrow = madModule.settings.enabledActivities.offhandThrown
+  const createTwoHanded = madModule.settings.enabledActivities.twoHanded
 
-  const thrown = weapons.filter(
-    (weapon) =>
-      weapon.system.properties.has(Dnd5eItemProperty.Thrown) &&
-      !hasWeaponTagActivity(weapon, MadActivityKey.ThrownActivityKey),
-  )
-  debug(
-    'Thrown weapons newly configured to have throw attack:',
-    thrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
-  )
+  let light: Item[]
+  if (createOffhand || createOffhandThrow) {
+    light = weapons.filter(
+      (weapon) =>
+        weapon.system.properties.has(Dnd5eItemProperty.Light) &&
+        !hasWeaponTagActivity(weapon, MadActivityKey.OffhandActivityKey),
+    )
 
-  const lightThrown = light.filter(
-    (weapon) => thrown.includes(weapon) && !hasWeaponTagActivity(weapon, MadActivityKey.OffhandThrownActivityKey),
-  )
-  debug(
-    'Light, thrown weapons newly configured to have offhand throw attack:',
-    lightThrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
-  )
+    debug(
+      'Light weapons newly configured to have offhand attack:',
+      light.map((weapon) => ({ id: weapon.id, name: weapon.name })),
+    )
+  } else {
+    light = []
+  }
 
-  const versatile = weapons.filter(
-    (weapon) =>
-      weapon.system.properties.has(Dnd5eItemProperty.Versatile) &&
-      !hasWeaponTagActivity(weapon, MadActivityKey.TwoHandedActivityKey),
-  )
-  debug(
-    'Versatile weapons newly configured to have two-handed attack:',
-    versatile.map((weapon) => ({ id: weapon.id, name: weapon.name })),
-  )
+  let thrown: Item[]
+  if (createThrown || createOffhandThrow) {
+    thrown = weapons.filter(
+      (weapon) =>
+        weapon.system.properties.has(Dnd5eItemProperty.Thrown) &&
+        !hasWeaponTagActivity(weapon, MadActivityKey.ThrownActivityKey),
+    )
+    debug(
+      'Thrown weapons newly configured to have throw attack:',
+      thrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
+    )
+  } else {
+    thrown = []
+  }
+
+  let lightThrown: Item[]
+  if (createOffhandThrow) {
+    lightThrown = light.filter(
+      (weapon) => thrown.includes(weapon) && !hasWeaponTagActivity(weapon, MadActivityKey.OffhandThrownActivityKey),
+    )
+    debug(
+      'Light, thrown weapons newly configured to have offhand throw attack:',
+      lightThrown.map((weapon) => ({ id: weapon.id, name: weapon.name })),
+    )
+  } else {
+    lightThrown = []
+  }
+
+  let versatile: Item[]
+  if (createTwoHanded) {
+    versatile = weapons.filter(
+      (weapon) =>
+        weapon.system.properties.has(Dnd5eItemProperty.Versatile) &&
+        !hasWeaponTagActivity(weapon, MadActivityKey.TwoHandedActivityKey),
+    )
+    debug(
+      'Versatile weapons newly configured to have two-handed attack:',
+      versatile.map((weapon) => ({ id: weapon.id, name: weapon.name })),
+    )
+  } else {
+    versatile = []
+  }
 
   await Promise.all([
-    ...light.map(addOffhandAttack),
-    ...thrown.map(addThrownAttack),
-    ...lightThrown.map(addOffhandThrownAttack),
-    ...versatile.map(addTwoHandedAttack),
+    ...(createOffhand ? light.map(addOffhandAttack) : []),
+    ...(createThrown ? thrown.map(addThrownAttack) : []),
+    ...(createOffhandThrow ? lightThrown.map(addOffhandThrownAttack) : []),
+    ...(createTwoHanded ? versatile.map(addTwoHandedAttack) : []),
   ])
 
   // Configure consumption of the weapon's consumable
-  if (madModule.settings.generateConsumables) {
-    await configureConsumableForThrownActivities(thrown)
+  if (madModule.settings.generateConsumables && (createThrown || createOffhandThrow)) {
+    await configureConsumableForThrownActivities(createThrown ? thrown : lightThrown)
   }
 }

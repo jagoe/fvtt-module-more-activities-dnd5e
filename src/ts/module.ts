@@ -18,6 +18,12 @@ export interface MoreActivitiesModule extends Module {
     debugLog: boolean
     generateConsumables: boolean
     ignoreNPCs: boolean
+    enabledActivities: {
+      offhand: boolean
+      thrown: boolean
+      offhandThrown: boolean
+      twoHanded: boolean
+    }
   }
 }
 
@@ -46,6 +52,12 @@ const initializeModule = () => {
     debugLog: false,
     generateConsumables: false,
     ignoreNPCs: false,
+    enabledActivities: {
+      offhand: true,
+      thrown: true,
+      offhandThrown: true,
+      twoHanded: true,
+    },
   }
 
   madModule.API = {
@@ -56,6 +68,12 @@ const initializeModule = () => {
 }
 
 const configureModule = () => {
+  madModule.settings.enabledActivities = {
+    offhand: loadSetting(MadSettings.CreateOffhandActivites, true),
+    thrown: loadSetting(MadSettings.CreateThrownActivites, true),
+    offhandThrown: loadSetting(MadSettings.CreateOffhandThrownActivites, true),
+    twoHanded: loadSetting(MadSettings.CreateTwoHandActivites, true),
+  }
   madModule.settings.debugLog = loadSetting(MadSettings.DebugLogMessages, false)
   madModule.settings.generateConsumables = loadSetting(MadSettings.ExperimentalGenerateConsumables, false)
   madModule.settings.ignoreNPCs = loadSetting(MadSettings.IgnoreNpcs, false)

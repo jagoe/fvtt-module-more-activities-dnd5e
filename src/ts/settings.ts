@@ -6,12 +6,66 @@ import { MoreActivitiesModule } from './module'
 
 export enum MadSettings {
   IgnoreNpcs = 'IgnoreNpcs',
+  CreateOffhandActivites = 'CreateOffhandActivites',
+  CreateThrownActivites = 'CreateThrownActivites',
+  CreateOffhandThrownActivites = 'CreateOffhandThrownActivites',
+  CreateTwoHandActivites = 'CreateTwoHandActivites',
   ExperimentalGenerateConsumables = 'ExperimentalGenerateConsumables',
   DebugLogMessages = 'LogDebugMessages',
   DebugResetMadActivitiesOnLoad = 'ResetMadActivitiesOnLoad',
 }
 
 export const registerSettings = (module: MoreActivitiesModule) => {
+  game.settings.register(moduleId, MadSettings.IgnoreNpcs, {
+    name: i18n('MAD.settings.feature.ignoreNpcs.name'),
+    hint: i18n('MAD.settings.feature.ignoreNpcs.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  })
+
+  game.settings.register(moduleId, MadSettings.CreateOffhandActivites, {
+    name: i18n('MAD.settings.feature.createOffhand.name'),
+    hint: i18n('MAD.settings.feature.createOffhand.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  })
+
+  game.settings.register(moduleId, MadSettings.CreateThrownActivites, {
+    name: i18n('MAD.settings.feature.createThrown.name'),
+    hint: i18n('MAD.settings.feature.createThrown.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  })
+
+  game.settings.register(moduleId, MadSettings.CreateOffhandThrownActivites, {
+    name: i18n('MAD.settings.feature.createOffhandThrown.name'),
+    hint: i18n('MAD.settings.feature.createOffhandThrown.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  })
+
+  game.settings.register(moduleId, MadSettings.CreateTwoHandActivites, {
+    name: i18n('MAD.settings.feature.createTwoHand.name'),
+    hint: i18n('MAD.settings.feature.createTwoHand.hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  })
+
   game.settings.register(moduleId, MadSettings.IgnoreNpcs, {
     name: i18n('MAD.settings.feature.ignoreNpcs.name'),
     hint: i18n('MAD.settings.feature.ignoreNpcs.hint'),
@@ -61,6 +115,11 @@ export const registerSettings = (module: MoreActivitiesModule) => {
 }
 
 export const onRenderSettingsConfig = () => {
+  $('<p>')
+    .addClass(['notification', 'info'])
+    .text(i18n('MAD.settings.feature.hint'))
+    .insertBefore($(`[name="${moduleId}.${MadSettings.IgnoreNpcs}"]`).parents('div.form-group:first'))
+
   $('<h3>')
     .addClass('border')
     .html(i18n('MAD.settings.experimental.title'))
