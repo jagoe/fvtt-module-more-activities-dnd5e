@@ -4,5 +4,5 @@ type notificationType = 'info' | 'error' | 'warn'
 
 export const displayNotification = (
   text: string,
-  options?: Notifications.NotifyOptions & { type?: notificationType; i18n?: boolean },
-) => (ui.notifications as Notifications)[options?.type ?? 'info'](options?.i18n ? i18n(text) : text, options)
+  options?: Notifications.NotifyOptions & { type?: notificationType },
+) => (ui.notifications as Notifications)[options?.type ?? 'info'](options?.localize ? i18n(text) : text, {...options, localize: false})
