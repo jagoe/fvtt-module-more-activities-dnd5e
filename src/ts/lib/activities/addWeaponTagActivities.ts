@@ -1,4 +1,4 @@
-import { getAllOwnedWeapons } from '@/lib/foundry'
+import { displayNotification, getAllOwnedWeapons } from '@/lib/foundry'
 import { addOffhandAttack } from './addOffhandAttack'
 import { addThrownAttack } from './addThrowAttack'
 import { addTwoHandedAttack } from './addTwoHandedAttack'
@@ -6,7 +6,7 @@ import { addOffhandThrownAttack } from './addOffhandThrownAttack'
 import { Dnd5eItemProperty } from '@/models'
 import { debug } from '../util/debug'
 import { hasWeaponTagActivity } from './hasWeaponTagActivity'
-import { MadActivityKey } from '@/constants'
+import { logPrefix, MadActivityKey } from '@/constants'
 import { madModule } from '@/module'
 import { configureConsumableForThrownActivities } from './configureConsumableForThrownActivities'
 
@@ -77,12 +77,17 @@ export const addWeaponTagActivities = async (weapons?: Item[]) => {
     versatile = []
   }
 
-  await Promise.all([
+  const results = await Promise.all([
     ...(createOffhand ? light.map(addOffhandAttack) : []),
     ...(createThrown ? thrown.map(addThrownAttack) : []),
     ...(createOffhandThrow ? lightThrown.map(addOffhandThrownAttack) : []),
     ...(createTwoHanded ? versatile.map(addTwoHandedAttack) : []),
   ])
+
+  const errors = new Set(results.filter(result => !!result?.error).map(result => result!.error!))
+  if (errors.size) {
+    errors.forEach(error => displayNotification(`${logPrefix} ${error}`, {type: 'warn', permanent: true}))
+  }
 
   // Configure consumption of the weapon's consumable
   if (madModule.settings.generateConsumables && (createThrown || createOffhandThrow)) {

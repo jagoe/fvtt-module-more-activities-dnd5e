@@ -2,7 +2,7 @@ import { dnd5eDefaultActivityKey, MadActivityKey } from '@/constants'
 import { i18n } from '../foundry'
 import { addWeaponTagActivity } from './addWeaponTagActivity'
 
-export const addTwoHandedAttack = async (weapon: Item) => {
+export const addTwoHandedAttack = async (weapon: Item): Promise<{error?: string} | undefined> => {
   const result = await addWeaponTagActivity({
     weapon,
     key: MadActivityKey.TwoHandedActivityKey,
@@ -39,13 +39,15 @@ export const addTwoHandedAttack = async (weapon: Item) => {
     },
   })
 
-  if (!result) {
-    // Already processed, nothing to do
-    return
+  if (!result || result.error) {
+    // Already processed or couldn't process
+    return result
   }
 
   // Update original attack name to reflect that it is one-handed
   await weapon.updateActivity(dnd5eDefaultActivityKey, {
     name: i18n('MAD.activities.oneHanded.name'),
   })
+
+  return
 }

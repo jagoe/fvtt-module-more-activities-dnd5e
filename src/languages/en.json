@@ -1,7 +1,7 @@
 {
   "MAD": {
     "errors": {
-      "noDefaultActivity": "Unexpected error: No default activity for item {item}"
+      "noDefaultActivity": "Unexpected error: Item \"{item}\" on actor \"{actor}\" doesn't have a default activity."
     },
     "settings": {
       "buttons": {

@@ -138,7 +138,7 @@ export const onRenderSettingsConfig = () => {
     async () => {
       await resetActivities()
 
-      displayNotification('MAD.settings.buttons.resetActivities.success', { i18n: true })
+      displayNotification('MAD.settings.buttons.resetActivities.success', { localize: true })
     },
   )
 
@@ -148,7 +148,7 @@ export const onRenderSettingsConfig = () => {
     async () => {
       await addWeaponTagActivities()
 
-      displayNotification('MAD.settings.buttons.createActivities.success', { i18n: true })
+      displayNotification('MAD.settings.buttons.createActivities.success', { localize: true })
     },
   )
 }
