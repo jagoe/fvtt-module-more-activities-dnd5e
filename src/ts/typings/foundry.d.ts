@@ -57,6 +57,7 @@ declare global {
     id: string | MadActivityKey
     parent: Item
     name: string
+    type: 'attack' | 'cast' | 'check' | 'damage' | 'enchant' | 'forward' | 'heal' | 'save' | 'summon' | 'utility'
     attack: ActivityAttack
     consumption: ActivityConsumption
     damage: ActivityDamage

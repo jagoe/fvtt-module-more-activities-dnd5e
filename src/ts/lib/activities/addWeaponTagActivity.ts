@@ -1,6 +1,5 @@
 import { MadActivityKey } from '@/constants'
 import { getDefaultActivity } from './getDefaultActivity'
-import { NoDefaultActivityError } from '@/models'
 import { i18n } from '../foundry'
 import { hasWeaponTagActivity } from './hasWeaponTagActivity'
 import { makeDefaultActivityMeleeRange } from './makeDefaultActivityMeleeRange'
@@ -24,7 +23,8 @@ export const addWeaponTagActivity = async ({
 
   const defaultActivity = getDefaultActivity(weapon)
   if (!defaultActivity) {
-    throw new NoDefaultActivityError(weapon)
+    const actor = weapon.parent
+    return {error: i18n('MAD.errors.noDefaultActivity', { item: weapon.name, actor: actor.name })}
   }
   const basicActicitySettings: Activity = {
     ...defaultActivity,
